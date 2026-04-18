@@ -1,0 +1,21 @@
+[33mfaeb467[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: commit: feat: integrate dotenv for environment variables and update package dependencies
+[33m56c9641[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{1}: commit: feat: add new pages for authentication and member management including AuthContext, Login, Register, Dashboard, AdminDashboard, and MemberDashboard
+[33m4cbe825[m HEAD@{2}: commit: feat: add new hooks for authentication and role management, and utility files for constants and formatters
+[33mf4dd50f[m HEAD@{3}: commit: feat: add new member components including CheckInButton, HealthTips, MyPlanCard, PaymentHistory, SubscriptionCard, SubscriptionStatus, and WorkoutProgress
+[33m00aabe7[m HEAD@{4}: commit: feat: add layout components including Header, Layout, MobileNav, and Sidebar
+[33m115370b[m HEAD@{5}: commit: feat: add common UI components including Avatar, Badge, Button, Card, LoadingSpinner, ProgressBar, and Toast
+[33mcabb04b[m HEAD@{6}: commit: feat: add new admin components for member management, recent payments, reports, revenue chart, and stats
+[33mb121a14[m HEAD@{7}: commit: feat: add API modules for admin, auth, payment, and subscription, and include performance reporting and testing setup
+[33m84c9f8f[m HEAD@{8}: commit: feat: add initial React app structure with index.html, manifest.json, and App component
+[33m08b6f90[m HEAD@{9}: commit: feat: initialize gym-frontend with React, Tailwind CSS, and essential dependencies
+[33mdbdcb17[m HEAD@{10}: commit: chore: remove commented-out code from admin and auth route files
+[33m8a9aa17[m HEAD@{11}: commit: chore: remove deprecated configuration and utility files
+[33m677ff5b[m HEAD@{12}: commit: chore: implement admin service and controller for dashboard statistics, revenue, and recent payments
+[33mfde5e79[m HEAD@{13}: commit: chore: add index route and AppError utility class
+[33m979d7cc[m HEAD@{14}: commit: chore: add utility files for async handling, token generation, and constants
+[33m48b9f55[m HEAD@{15}: commit: chore: add user module with model, repository, service, and validator files
+[33mffba066[m HEAD@{16}: commit: chore: add subscription module with controller, model, repository, service, and routes
+[33m8a776e6[m HEAD@{17}: commit: chore: add report module with controller, service, and routes
+[33m0077cb6[m HEAD@{18}: commit: chore: add payment module with controller, model, repository, service, and routes
+[33m853b481[m HEAD@{19}: commit: chore: add check-in module with controller, model, routes, and service files
+[33md01615f[m HEAD@{20}: commit: chore: implement authentication and authorization routes, controllers, services, and validators
