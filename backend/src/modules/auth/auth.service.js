@@ -14,7 +14,11 @@ export const registerUser = async ({ name, email, password }) => {
 
   const user = await repo.createUser({ name, email, password });
 
-  return user;
+  // Don't send password back
+  const userWithoutPassword = user.toObject();
+  delete userWithoutPassword.password;
+  
+  return userWithoutPassword;
 };
 
 export const loginUser = async ({ email, password }) => {
@@ -32,11 +36,25 @@ export const loginUser = async ({ email, password }) => {
   user.refreshToken = refreshToken;
   await repo.saveUser(user);
 
-  return { user, accessToken, refreshToken };
+  // Don't send password back
+  const userWithoutPassword = user.toObject();
+  delete userWithoutPassword.password;
+  delete userWithoutPassword.refreshToken;
+
+  return { user: userWithoutPassword, accessToken, refreshToken };
 };
 
 export const getMe = async (userId) => {
-  return repo.findById(userId);
+  const user = await repo.findById(userId);
+  
+  if (!user) throw new AppError('User not found', 404);
+  
+  // Don't send password or refresh token
+  const userWithoutSensitive = user.toObject();
+  delete userWithoutSensitive.password;
+  delete userWithoutSensitive.refreshToken;
+  
+  return userWithoutSensitive;
 };
 
 export const refreshTokenService = async (token) => {
@@ -44,7 +62,7 @@ export const refreshTokenService = async (token) => {
 
   const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
-  const user = await repo.findById(decoded.userId).select('+refreshToken');
+  const user = await repo.findById(decoded.userId);
 
   if (!user || user.refreshToken !== token) {
     throw new AppError('Invalid refresh token', 401);

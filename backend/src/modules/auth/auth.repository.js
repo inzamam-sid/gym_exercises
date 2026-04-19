@@ -9,7 +9,7 @@ export const createUser = (data) => {
 };
 
 export const findById = (id) => {
-  return User.findById(id);
+  return User.findById(id).select('-password -refreshToken');
 };
 
 export const saveUser = (user) => {
