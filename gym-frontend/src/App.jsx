@@ -95,6 +95,7 @@ import Register from './pages/auth/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MemberDashboard from './pages/member/MemberDashboard';
 import Layout from './components/layout/Layout';
+import MembersList from './pages/admin/MembersList';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -134,6 +135,7 @@ function AppRoutes() {
               <Routes>
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="members" element={<MembersList />} />
               </Routes>
             </Layout>
           </ProtectedRoute>
