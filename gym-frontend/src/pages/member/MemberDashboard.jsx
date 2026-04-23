@@ -3,6 +3,7 @@ import { getMySubscriptions } from '../../api/subscriptionAPI';
 import { getMyPayments } from '../../api/paymentAPI';
 import SubscriptionCard from '../../components/member/SubscriptionCard';
 import PaymentHistory from '../../components/member/PaymentHistory';
+import CheckInButton from '../../components/member/CheckInButton';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
@@ -31,9 +32,7 @@ const MemberDashboard = () => {
     }
   };
 
-  if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
-  }
+  if (loading) return <div className="text-center py-8">Loading...</div>;
 
   const activeSubscription = subscriptions.find(s => s.status === 'active');
 
@@ -44,9 +43,14 @@ const MemberDashboard = () => {
         <p className="text-gray-600 mt-1">Track your fitness journey</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SubscriptionCard subscription={activeSubscription} />
-        <PaymentHistory payments={payments} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <SubscriptionCard subscription={activeSubscription} />
+          <PaymentHistory payments={payments} />
+        </div>
+        <div>
+          <CheckInButton />
+        </div>
       </div>
     </div>
   );
