@@ -96,6 +96,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import MemberDashboard from './pages/member/MemberDashboard';
 import Layout from './components/layout/Layout';
 import MembersList from './pages/admin/MembersList';
+import PaymentRequests from './pages/admin/PaymentRequests';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -136,6 +137,7 @@ function AppRoutes() {
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="members" element={<MembersList />} />
+                <Route path="payments" element={<PaymentRequests />} />
               </Routes>
             </Layout>
           </ProtectedRoute>
