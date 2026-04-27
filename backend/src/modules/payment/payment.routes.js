@@ -5,11 +5,14 @@ import { authorize } from '../../middleware/role.middleware.js';
 
 const router = express.Router();
 
-// Member
-router.post('/', protect, controller.create);
+// Member routes
+router.post('/request', protect, controller.createPaymentRequest);
+router.get('/my-requests', protect, controller.getMyPaymentRequests);
 router.get('/my', protect, controller.getMyPayments);
 
-// Admin
-router.get('/', protect, authorize('admin'), controller.getAllPayments);
+// Admin routes
+router.get('/requests', protect, authorize('admin'), controller.getAllPaymentRequests);
+router.put('/requests/:id/verify', protect, authorize('admin'), controller.verifyPayment);
+router.get('/pending-count', protect, authorize('admin'), controller.getPendingCount);
 
 export default router;
