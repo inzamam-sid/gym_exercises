@@ -9,7 +9,9 @@ export const getAllSubscriptions = () => {
 };
 
 export const findByUserId = (userId) => {
-  return Subscription.find({ userId }).populate('userId', 'name email').sort({ createdAt: -1 });
+  return Subscription.find({ userId })
+    .populate('userId', 'name email')
+    .sort({ createdAt: -1 });
 };
 
 export const findActiveByUser = (userId) => {

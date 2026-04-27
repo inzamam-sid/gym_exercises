@@ -1,6 +1,6 @@
 import * as repo from './subscription.repository.js';
 import AppError from '../../utils/AppError.js';
-import { addDays, addMonths, addYears, differenceInDays } from 'date-fns';
+import { addDays } from 'date-fns';
 
 const getPlanDetails = (plan) => {
   const plans = {
@@ -35,7 +35,15 @@ export const getAllSubscriptions = async () => {
 };
 
 export const getUserSubscriptions = async (userId) => {
-  return repo.findByUserId(userId);
+  const subscriptions = await repo.findByUserId(userId);
+  console.log(`Found ${subscriptions.length} subscriptions for user ${userId}`);
+  
+  // Log each subscription for debugging
+  subscriptions.forEach(sub => {
+    console.log(`- ${sub.plan}: ${sub.status}, ends: ${sub.endDate}`);
+  });
+  
+  return subscriptions;
 };
 
 export const cancelSubscription = async (id) => {

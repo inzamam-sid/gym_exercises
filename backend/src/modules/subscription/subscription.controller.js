@@ -21,6 +21,7 @@ export const getAllSubscriptions = async (req, res, next) => {
 export const getMySubscriptions = async (req, res, next) => {
   try {
     const data = await service.getUserSubscriptions(req.user._id);
+    console.log('Found subscriptions for user:', data.length);
     res.json({ success: true, data });
   } catch (err) {
     next(err);
