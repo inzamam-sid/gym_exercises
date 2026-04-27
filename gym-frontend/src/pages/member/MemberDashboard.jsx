@@ -12,10 +12,7 @@ const MemberDashboard = () => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchMemberData();
-  }, []);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchMemberData = async () => {
     try {
@@ -32,6 +29,14 @@ const MemberDashboard = () => {
     }
   };
 
+  useEffect(() => {
+    fetchMemberData();
+  }, [refreshKey]);
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
   const activeSubscription = subscriptions.find(s => s.status === 'active');
@@ -45,7 +50,7 @@ const MemberDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <SubscriptionCard subscription={activeSubscription} />
+          <SubscriptionCard subscription={activeSubscription} onRefresh={handleRefresh} />
           <PaymentHistory payments={payments} />
         </div>
         <div>

@@ -16,6 +16,8 @@ const Sidebar = () => {
     { path: '/admin/members', icon: UserGroupIcon, label: 'Members' },
     { path: '/admin/payments', icon: CreditCardIcon, label: 'Payments' },
     { path: '/admin/reports', icon: ChartBarIcon, label: 'Reports' },
+    { path: '/admin/payment-requests', icon: CreditCardIcon, label: 'Payment Requests' },
+{ path: '/admin/payments', icon: CreditCardIcon, label: 'Payment Requests' }
   ];
   
   const memberMenus = [
