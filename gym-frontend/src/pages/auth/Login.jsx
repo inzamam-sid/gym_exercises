@@ -113,6 +113,8 @@ const Login = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
+  console.log('Login attempt with:', { email, password });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -120,6 +122,7 @@ const Login = () => {
     try {
       console.log('Attempting login for:', email);
       const response = await login({ email, password });
+      console.log('Full response:', response);
       console.log('Login response:', response.data);
       
       setUser(response.data.data);
