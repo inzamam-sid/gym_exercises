@@ -1,81 +1,41 @@
-
 // import axios from 'axios';
 
+// // Use the environment variable or fallback to localhost
+// const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
+
 // const axiosInstance = axios.create({
-//   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1',
+//   baseURL: API_URL,
 //   withCredentials: true,
+//   timeout: 30000,
 //   headers: {
 //     'Content-Type': 'application/json',
+//     'Accept': 'application/json',
 //   },
 // });
 
-// // Prevent multiple refresh token requests
-// let isRefreshing = false;
-// let failedQueue = [];
+// // Request interceptor
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     console.log(`🚀 ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
+//     return config;
+//   },
+//   (error) => {
+//     console.error('Request Error:', error);
+//     return Promise.reject(error);
+//   }
+// );
 
-// const processQueue = (error, token = null) => {
-//   failedQueue.forEach(prom => {
-//     if (error) {
-//       prom.reject(error);
-//     } else {
-//       prom.resolve(token);
-//     }
-//   });
-//   failedQueue = [];
-// };
-
+// // Response interceptor
 // axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-    
-//     // Don't retry if it's already a retry
-//     if (originalRequest._retry) {
-//       return Promise.reject(error);
+//   (response) => {
+//     console.log(`✅ ${response.config.url} - ${response.status}`);
+//     return response;
+//   },
+//   (error) => {
+//     console.error(`❌ Error:`, error.message);
+//     if (error.code === 'ERR_NETWORK') {
+//       console.error('❌ Cannot connect to backend. Make sure it\'s running on port 5000');
 //     }
-    
-//     // Handle 401 Unauthorized
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       // Don't retry login/register endpoints
-//       if (originalRequest.url.includes('/login') || originalRequest.url.includes('/register')) {
-//         return Promise.reject(error);
-//       }
-      
-//       if (isRefreshing) {
-//         // Queue the request while token is being refreshed
-//         return new Promise((resolve, reject) => {
-//           failedQueue.push({ resolve, reject });
-//         })
-//           .then(() => axiosInstance(originalRequest))
-//           .catch(err => Promise.reject(err));
-//       }
-      
-//       originalRequest._retry = true;
-//       isRefreshing = true;
-      
-//       try {
-//         await axiosInstance.post('/auth/refresh-token');
-//         processQueue(null);
-//         return axiosInstance(originalRequest);
-//       } catch (refreshError) {
-//         processQueue(refreshError, null);
-//         // Clear cookies and redirect to login
-//         document.cookie.split(";").forEach(c => {
-//           document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-//         });
-//         window.location.href = '/login';
-//         return Promise.reject(refreshError);
-//       } finally {
-//         isRefreshing = false;
-//       }
-//     }
-    
-//     // Handle 429 Too Many Requests
-//     if (error.response?.status === 429) {
-//       await new Promise(resolve => setTimeout(resolve, 2000));
-//       return axiosInstance(originalRequest);
-//     }
-    
 //     return Promise.reject(error);
 //   }
 // );
@@ -85,21 +45,74 @@
 
 
 
+
+// import axios from 'axios';
+
+// const API_URL = 'http://localhost:5000/api/v1';
+
+// const axiosInstance = axios.create({
+//   baseURL: API_URL,
+//   // Temporarily disable withCredentials to test
+//   // withCredentials: true,
+//   timeout: 30000,
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'Accept': 'application/json',
+//   },
+// });
+
+// // Request interceptor
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     console.log(`🚀 ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
+//     return config;
+//   },
+//   (error) => {
+//     console.error('Request Error:', error);
+//     return Promise.reject(error);
+//   }
+// );
+
+// // Response interceptor
+// axiosInstance.interceptors.response.use(
+//   (response) => {
+//     console.log(`✅ ${response.config.url} - ${response.status}`);
+//     return response;
+//   },
+//   (error) => {
+//     console.error(`❌ Error:`, error.message);
+//     return Promise.reject(error);
+//   }
+// );
+
+// export default axiosInstance;
+
+
+
+
+
+
+
 import axios from 'axios';
 
+const API_URL = 'http://localhost:5000/api/v1';
+
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api/v1',
-  withCredentials: true,
-  timeout: 10000,
+  baseURL: API_URL,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
 });
 
-// Request interceptor
+// Request interceptor - Add token to headers
 axiosInstance.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     console.log(`🚀 ${config.method.toUpperCase()} ${config.url}`);
     return config;
   },
@@ -116,19 +129,12 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error(`❌ ${error.config?.url} -`, error.response?.status || error.message);
-    
-    // Handle 401 - just reject, don't auto-redirect
+    console.error(`❌ Error:`, error.response?.status, error.message);
     if (error.response?.status === 401) {
-      // Let the app handle it
-      return Promise.reject(error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
     }
-    
-    // Handle network errors
-    if (error.message === 'Network Error') {
-      console.error('Network Error - Make sure backend is running on port 5000');
-    }
-    
     return Promise.reject(error);
   }
 );
