@@ -1,8 +1,9 @@
+
+
 // import React, { useState } from 'react';
 // import { useNavigate, Link } from 'react-router-dom';
 // import { login } from '../../api/authAPI';
-// import { getMe } from '../../api/authAPI';
-// import { useAuth } from '../../hooks/useAuth';
+// import { useAuth } from '../../contexts/AuthContext';
 // import toast from 'react-hot-toast';
 
 // const Login = () => {
@@ -12,81 +13,91 @@
 //   const navigate = useNavigate();
 //   const { setUser } = useAuth();
 
+//   // Log the API URL on component mount
+//   React.useEffect(() => {
+//     console.log('API URL:', process.env.REACT_APP_API_URL);
+//   }, []);
+
 //   const handleSubmit = async (e) => {
-//   e.preventDefault();
-//   setLoading(true);
-
-//   try {
-//     await login({ email, password });
-
-//     // 🔥 NOW call /me AFTER cookie stored
-//     const meRes = await getMe();
-
-//     setUser(meRes.data.data);
-
-//     toast.success('Login successful!');
-
-//     if (meRes.data.data.role === 'admin') {
-//       navigate('/admin/dashboard');
-//     } else {
-//       navigate('/member/dashboard');
+//     e.preventDefault();
+//     setLoading(true);
+    
+//     console.log('Attempting login with:', { email, password: '***' });
+    
+//     try {
+//       const response = await login({ email, password });
+//       console.log('Login response:', response.data);
+      
+//       if (response.data.success) {
+//         setUser(response.data.data);
+//         toast.success('Login successful!');
+        
+//         if (response.data.data.role === 'admin') {
+//           navigate('/admin/dashboard');
+//         } else {
+//           navigate('/member/dashboard');
+//         }
+//       }
+//     } catch (error) {
+//       console.error('Login error details:', error);
+//       console.error('Error code:', error.code);
+//       console.error('Error message:', error.message);
+      
+//       if (error.code === 'ERR_NETWORK') {
+//         toast.error('Cannot connect to backend at localhost:5000. Please start the backend server.');
+//       } else if (error.response?.data?.message) {
+//         toast.error(error.response.data.message);
+//       } else {
+//         toast.error('Login failed: ' + error.message);
+//       }
+//     } finally {
+//       setLoading(false);
 //     }
-
-//   } catch (error) {
-//     toast.error(error.response?.data?.message || 'Login failed');
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+//   };
 
 //   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+//     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
 //       <div className="max-w-md w-full space-y-8">
 //         <div>
-//           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-//             Sign in to your account
-//           </h2>
+//           <h2 className="text-center text-3xl font-bold text-gray-900">Sign in to your account</h2>
+//           <p className="text-center text-sm text-gray-600 mt-2">
+//             Test: admin@gympro.com / Admin123456
+//           </p>
 //         </div>
-//         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-//           <div className="rounded-md shadow-sm -space-y-px">
-//             <div>
-//               <input
-//                 type="email"
-//                 required
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-//                 placeholder="Email address"
-//               />
-//             </div>
-//             <div>
-//               <input
-//                 type="password"
-//                 required
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-//                 placeholder="Password"
-//               />
-//             </div>
-//           </div>
-
+//         <form onSubmit={handleSubmit} className="space-y-6">
 //           <div>
-//             <button
-//               type="submit"
-//               disabled={loading}
-//               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-//             >
-//               {loading ? 'Signing in...' : 'Sign in'}
-//             </button>
+//             <input
+//               type="email"
+//               required
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//               placeholder="Email address"
+//             />
 //           </div>
-          
-//           <div className="text-sm text-center">
-//             <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
-//               Don't have an account? Register
-//             </Link>
+//           <div>
+//             <input
+//               type="password"
+//               required
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//               placeholder="Password"
+//             />
 //           </div>
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+//           >
+//             {loading ? 'Signing in...' : 'Sign in'}
+//           </button>
 //         </form>
+//         <div className="text-center">
+//           <Link to="/register" className="text-blue-600 hover:text-blue-700">
+//             Don't have an account? Register
+//           </Link>
+//         </div>
 //       </div>
 //     </div>
 //   );
@@ -100,10 +111,11 @@
 
 
 
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../../api/authAPI';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 const Login = () => {
@@ -111,91 +123,94 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useAuth();
-
-  console.log('Login attempt with:', { email, password });
+  const { login: authLogin } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
+    // Clear any old tokens
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    console.log('Attempting login for:', email);
+    
     try {
-      console.log('Attempting login for:', email);
       const response = await login({ email, password });
-      console.log('Full response:', response);
       console.log('Login response:', response.data);
       
-      setUser(response.data.data);
-      toast.success('Login successful!');
-      
-      // Small delay to ensure cookies are set
-      setTimeout(() => {
-        if (response.data.data.role === 'admin') {
-          navigate('/admin/dashboard');
-        } else {
-          navigate('/member/dashboard');
+      if (response.data.success) {
+        const token = response.data.token;
+        console.log('Token received:', token ? 'Yes' : 'No', 'Length:', token?.length);
+        
+        if (!token) {
+          console.error('No token in response!');
+          toast.error('Login failed: No token received');
+          return;
         }
-      }, 100);
-      
+        
+        authLogin(response.data.data, token);
+        toast.success('Login successful!');
+        
+        setTimeout(() => {
+          if (response.data.data.role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate('/member/dashboard');
+          }
+        }, 100);
+      }
     } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      toast.error(error.response?.data?.message || 'Login failed. Make sure backend is running.');
+      console.error('Login error:', error);
+      toast.error(error.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Test credentials: admin@gympro.com / Admin123456
+          <h2 className="text-center text-3xl font-bold text-gray-900">Sign in to your account</h2>
+          <p className="text-center text-sm text-gray-600 mt-2">
+            Test: admin@gympro.com / Admin123456
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-          </div>
-
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email address"
+            />
           </div>
-          
-          <div className="text-sm text-center">
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500">
-              Don't have an account? Register
-            </Link>
+          <div>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Password"
+            />
           </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? 'Signing in...' : 'Sign in'}
+          </button>
         </form>
+        <div className="text-center">
+          <Link to="/register" className="text-blue-600 hover:text-blue-700">
+            Don't have an account? Register
+          </Link>
+        </div>
       </div>
     </div>
   );
